@@ -1,0 +1,20 @@
+{
+    "python-envs.defaultEnvManager": "ms-python.python:system",
+    "python.defaultInterpreterPath": "${workspaceFolder}\\venv\\Scripts\\python.exe",
+    "python.interpreterPath": "${workspaceFolder}\\venv\\Scripts\\python.exe",
+
+    // ── Tailwind CSS v4 ──────────────────────────────────────────────────────
+    // Suppress false-positive "Unknown at rule" warnings for @theme, @custom-variant, @layer etc.
+    "css.lint.unknownAtRules": "ignore",
+    "scss.lint.unknownAtRules": "ignore",
+
+    // Tell VS Code to treat index.css as Tailwind CSS for proper IntelliSense
+    "files.associations": {
+        "*.css": "tailwindcss"
+    },
+
+    // Tailwind IntelliSense: trigger completions inside className strings
+    "editor.quickSuggestions": {
+        "strings": "on"
+    }
+}
