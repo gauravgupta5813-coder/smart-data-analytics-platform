@@ -20,7 +20,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
-        "https://your-frontend-url.onrender.com"
+        "https://smart-data-analytics-platform.vercel.app/"
     ],
     allow_credentials=True,
     allow_methods=["*"],
