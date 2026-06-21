@@ -19,8 +19,8 @@ app.mount(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173",
-        "https://smart-data-analytics-platform.vercel.app/"
+        "https://smart-data-analytics-platform.vercel.app/",
+        "http://localhost:5173"
     ],
     allow_credentials=True,
     allow_methods=["*"],
