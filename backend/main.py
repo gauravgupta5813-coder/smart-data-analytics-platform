@@ -35,3 +35,7 @@ app.include_router(ml_router)
 @app.get("/")
 def home():
     return {"message": "Data Analytics Dashboard API"}
+
+@app.get("/test")
+def test():
+    return {"status": "latest deployment"}
