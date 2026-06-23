@@ -5,6 +5,7 @@ import {
   LayoutDashboard, UploadCloud, LineChart, Cpu, Settings, X, ArrowRight,
   Command
 } from "lucide-react";
+import { useProfile } from "../hooks/useProfile";
 
 // ── Searchable routes ─────────────────────────────────────────────────────
 const SEARCH_ITEMS = [
@@ -21,8 +22,45 @@ const SEARCH_ITEMS = [
   { label: "Clear notifications",      path: null,               icon: Bell,            category: "Actions", action: "clear-notifications" },
 ];
 
+// Initials avatar for header
+function HeaderAvatar({ name, avatar }) {
+  const initials = name
+    ? name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()
+    : "?";
+  if (avatar) {
+    return (
+      <img
+        src={avatar}
+        alt={name}
+        className="w-10 h-10 rounded-xl object-cover shadow"
+        style={{ boxShadow: "0 0 0 2px rgba(79,70,229,0.25)" }}
+      />
+    );
+  }
+  return (
+    <div
+      className="w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br from-indigo-500 to-cyan-400 text-white font-bold text-sm select-none shadow"
+      style={{ boxShadow: "0 0 0 2px rgba(79,70,229,0.25)" }}
+    >
+      {initials}
+    </div>
+  );
+}
+
 function Header({ datasetStatus, datasetInfo, isDark, onToggleTheme }) {
   const navigate = useNavigate();
+  const { profile: storedProfile } = useProfile();
+  const [profile, setProfile] = useState(storedProfile);
+
+  // Sync profile on same-tab updates
+  useEffect(() => {
+    const handler = (e) => setProfile({ ...storedProfile, ...e.detail });
+    window.addEventListener("aether-profile-update", handler);
+    return () => window.removeEventListener("aether-profile-update", handler);
+  }, [storedProfile]);
+
+  useEffect(() => { setProfile(storedProfile); }, [storedProfile]);
+
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState([
     { id: 1, text: "System initialized and ready.", type: "info", time: "Just now" }
@@ -359,19 +397,22 @@ function Header({ datasetStatus, datasetInfo, isDark, onToggleTheme }) {
         {/* Divider */}
         <div className="h-6 w-px" style={dividerStyle} />
 
-        {/* User Info */}
-        <div className="flex items-center gap-3">
+        {/* User Info — click to go to Settings */}
+        <button
+          onClick={() => navigate("/settings")}
+          className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
+          title="Edit profile in Settings"
+        >
           <div className="text-right hidden md:block">
-            <p className="text-sm font-semibold" style={{ color: isDark ? "#F1F5F9" : "#1E293B" }}>Gaurav Sharma</p>
-            <p className="text-xs" style={{ color: "#94A3B8" }}>ML &amp; Data Engineer</p>
+            <p className="text-sm font-semibold" style={{ color: isDark ? "#F1F5F9" : "#1E293B" }}>
+              {profile.name || "Set your name"}
+            </p>
+            <p className="text-xs" style={{ color: "#94A3B8" }}>
+              {profile.role || "Set your role"}
+            </p>
           </div>
-          <img
-            src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&fit=crop&q=80"
-            alt="User Avatar"
-            className="w-10 h-10 rounded-xl object-cover shadow"
-            style={{ boxShadow: `0 0 0 2px ${isDark ? "rgba(79,70,229,0.3)" : "rgba(79,70,229,0.15)"}` }}
-          />
-        </div>
+          <HeaderAvatar name={profile.name} avatar={profile.avatar} />
+        </button>
       </div>
     </header>
   );
